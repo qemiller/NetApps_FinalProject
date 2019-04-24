@@ -12,14 +12,14 @@ def LED_setup():
 
 def red_LED():
 	GPIO.output(green, False)
-	GPIO.output(blue, False)
-	GPIO.output(red, True)
+	GPIO.output(blue,  False)
+	GPIO.output(red,   True)
 	time.sleep(5)
 
 def green_LED():
 	GPIO.output(green, True)
-	GPIO.output(blue, False)
-	GPIO.output(red, False)
+	GPIO.output(blue,  False)
+	GPIO.output(red,   False)
 	time.sleep(5)
 
 def blue_LED():
@@ -28,14 +28,20 @@ def blue_LED():
 	GPIO.output(blue,  True)
 	time.sleep(5)
 
-def all_LED():
+def all_on_LED():
 	GPIO.output(green, True)
-	GPIO.output(red, True)
-	GPIO.output(blue, True)
+	GPIO.output(red,   True)
+	GPIO.output(blue,  True)
 	time.sleep(5)
+def all_off_LED():
+	GPIO.output(blue,   False)
+	GPIO.output(red,    False)
+	GPIO.output(green,  False)
+
 
 LED_setup()
-all_LED()
+all_on_LED()
 red_LED()
 green_LED()
 blue_LED()
+all_off_LED()
