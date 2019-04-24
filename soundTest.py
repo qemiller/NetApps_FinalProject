@@ -1,6 +1,8 @@
 from pygame import mixer
+import time
+
 mixer.init()
-alert = mixer.sound('beep.wav')
+alert = mixer.Sound('beep.wav')
 alert.play()
-alert.close
-mixer.close()
+time.sleep(5)
+mixer.quit()
