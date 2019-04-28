@@ -4,8 +4,8 @@ import socket
 from pymongo import MongoClient
 
 app= Flask(__name__)
-client = MongoClient('localhost:27017')
-db = client.Attendance
+db = MongoClient['Attendance']
+col = db['Students']
 
 def check_auth(username,password):
 	return username=="abc" and password=='123'
@@ -49,7 +49,7 @@ def hello():
 @requires_auth
 def summary():
 	try:
-		data = db.Students.find({})
+		data = col.find()
 		return render_template('Report.html', data = data)
 	except Exception as e:
 		return "error"
