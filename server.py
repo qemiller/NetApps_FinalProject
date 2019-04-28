@@ -52,7 +52,7 @@ def summary():
 		data = db.Students.find()
 		return render_template('Report.html', data = data)
 	except Exception as e:
-		return dumps({'error': str(e)})
+		return "error"
 	return "hello user"
 
 
