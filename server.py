@@ -49,7 +49,7 @@ def hello():
 @requires_auth
 def summary():
 	try:
-		data = db.Students.find()
+		data = db.Students.find({})
 		return render_template('Report.html', data = data)
 	except Exception as e:
 		return "error"
