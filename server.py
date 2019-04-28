@@ -53,7 +53,7 @@ def summary():
 		data = col.find()
 		return render_template('Report.html', data = data)
 	except Exception as e:
-		return "error"
+		return str(e)
 	return "hello user"
 
 
