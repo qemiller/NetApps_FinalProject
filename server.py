@@ -51,7 +51,7 @@ def hello():
 def summary():
 	try:
 		data = col.find()
-		return render_template('Report.html', **data)
+		return render_template('Report.html', data = data)
 	except Exception as e:
 		return "error"
 	return "hello user"
