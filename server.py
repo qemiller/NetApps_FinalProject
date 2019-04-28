@@ -1,10 +1,11 @@
 from flask import Flask, request, Response, render_template
 from functools import wraps
 import socket
-from pymongo import MongoClient
+import pymongo
 
 app= Flask(__name__)
-db = MongoClient['Attendance']
+client = pymongo.MongoClient()
+db = client["Attendance"]
 col = db['Students']
 
 def check_auth(username,password):
