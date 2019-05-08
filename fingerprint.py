@@ -57,7 +57,7 @@ def beep():
     mixer.init()
     alert = mixer.Sound('beep.wav')
     alert.play()
-    time.sleep(2)
+    time.sleep(5)
     mixer.quit()
 
 
@@ -221,16 +221,17 @@ def checkID_DB(id):
     db = mongoclient['FingerPrintData']
     col = db['FingerPrintTemplates']
     query = {"ID": id}    #define the criteria of our find
-    res = col.find(query) #retrieve from collection with specified query
-    print("Retrieved this from finger data in MongoDB: ", res) #just for debugging, really
-    if res['name'] is None or res['name'] == "":
+    result_query = list(col.find(query)) #retrieve from collection with specified query
+    user = result_query[0]
+    print("Retrieved this from finger data in MongoDB: ", user) #just for debugging, really
+    if user['name'] is None or user['name'] == "":
         print('You\'re not enrolled! Please see instructor about enrolling.')
         return {'Name': "failed"} #simply because this function must return a dict
 
     # package the name in a dictionary. Server will update student ID number
     date = datetime.datetime.now().strftime("%m-%d-%Y")
     # server expects 'Name' rather than 'name' : take car of that here
-    att_data = {'Name': res['name'], 'StudentIDNumber': 0, 'Date': date, 'Status': 'Present'}
+    att_data = {'Name': user['name'], 'StudentIDNumber': 0, 'Date': date, 'Status': 'Present'}
     return att_data
 
 
@@ -252,6 +253,8 @@ while True:
             print("Detected #", finger.finger_id, "with confidence", finger.confidence)
             if finger.confidence > 50: 
                 #yellow_LED()
+                user=checkID_DB(finger.finger_id)
+                print("~~~~~~id is "+finger.finger_id+" with input use name is "+user+"~~~~~")
                 beep()
             else:
                 print("Try again")
