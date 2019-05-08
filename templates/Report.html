@@ -2,17 +2,24 @@
 <html>
 
 <body>
-    <thead>
-        <th>Name</th>
-        <th>Date</th>
-        <th>Status</th>
-    </thead>
-    <tbody>
-        {% for student in data %}
-        <tr><td>student["Name"]</td><td>student["Date"]</td><td>student["Status"]</td></tr>
-        {% endfor %}
-    </tbody>
-
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in data %}
+            <tr>
+                <td>student["Name"]</td>
+                <td>student["Date"]</td>
+                <td>student["Status"]</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     <h4></h4>
 
 </body>
