@@ -1,15 +1,65 @@
 import time
-#import board
-#import busio
-#import RPi.GPIO as GPIO
-#from digitalio import DigitalInOut, Direction
 import adafruit_fingerprint
 import requests
-#led = DigitalInOut(board.D13)
-#led.direction = Direction.OUTPUT
-#GPIO.setmode(GPIO.BOARD)
+from pygame import mixer
+import RPi.GPIO as GPIO #pip3 install RPi.GPIO
+#adding-from-client--------------------------------------------------------------------------
+
+blue=11
+red=15
+green=13
+def LED_setup():
+    listLight=[red, green, blue]
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(listLight,GPIO.OUT)
+
+def red_LED():
+    GPIO.output(green, False)
+    GPIO.output(blue,  False)
+    GPIO.output(red,   True)
+    time.sleep(5)
+
+def green_LED():
+    GPIO.output(green, True)
+    GPIO.output(blue,  False)
+    GPIO.output(red,   False)
+    time.sleep(5)
+
+def blue_LED():
+    GPIO.output(green, False)
+    GPIO.output(red,   False)
+    GPIO.output(blue,  True)
+    time.sleep(5)
+
+def all_on_LED():
+    GPIO.output(green, True)
+    GPIO.output(red,   True)
+    GPIO.output(blue,  True)
+    time.sleep(5)
+    
+def yellow_LED():
+    GPIO.output(green, True)
+    GPIO.output(red,   True)
+    GPIO.output(blue,  False)
+    time.sleep(5)
+
+def all_off_LED():
+    GPIO.output(blue,   False)
+    GPIO.output(red,    False)
+    GPIO.output(green,  False)
 
 
+LED_setup()
+
+def beep():
+    mixer.init()
+    alert = mixer.Sound('beep.wav')
+    alert.play()
+    time.sleep(2)
+    mixer.quit()
+
+
+#------------------------------------------------------------------
 #uart = busio.UART(board.TX, board.RX, baudrate=57600)
 
 # If using with a computer such as Linux/RaspberryPi, Mac, Windows...
@@ -180,6 +230,11 @@ while True:
     if c == 'f':
         if get_fingerprint():
             print("Detected #", finger.finger_id, "with confidence", finger.confidence)
+            if finger.confidence > 50: 
+                #yellow_LED()
+                beep()
+            else:
+                print("Try again")
         else:
             print("Finger not found")
     if c == 'd':
