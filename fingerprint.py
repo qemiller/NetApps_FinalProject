@@ -218,8 +218,8 @@ def get_num():
 # takes ID and returns doc from DB if exists. Returns empty string if not.
 def checkID_DB(id):
     mongoclient = pymongo.MongoClient()
-    db = mongoclient['FingerPrintData']
-    col = db['FingerPrintTemplates']
+    db = mongoclient['FingerprintData']
+    col = db['FingerTemplates']
     query = {"ID": id}    #define the criteria of our find
     result_query = list(col.find(query)) #retrieve from collection with specified query
     user = result_query[0]
