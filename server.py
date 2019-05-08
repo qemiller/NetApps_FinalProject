@@ -5,8 +5,10 @@ import pymongo
 
 app= Flask(__name__)
 client = pymongo.MongoClient()
-db = client["Attendance"]
-col = db['Students']
+attDB = client['Attendance']
+attCol = attDB['Students']
+fullDB = client['FullRoster']
+fullCol = fullDB['Students']
 
 def check_auth(username,password):
 	return username=="abc" and password=='123'
@@ -46,12 +48,25 @@ def requires_auth(f):
 def hello():
 	return "hello user"
 
-@app.route("/summary", methods = ['GET'])
+@app.route("/summary/<date>", methods = ['GET'])
 @requires_auth
-def summary():
+def summary(date):
 	try:
-		data = col.find()
-		return render_template('Report.html', data = data)
+		date = date.replace('-','/')
+		print(date)
+		fullData = fullCol.find()
+		attData = attCol.find( {[Date]: date}, {name:1})
+		print(attData.pretty())
+		for d in fullData:
+			studName = d["Name"]
+			presentStud
+			for s in attData:
+				if s["Name"] == studName:
+					presentStud.copy(s)
+			if presentStud == {}:
+				attData.append({Name:d["Name"],StudentIDNumber:d["StudentID"],Date:date,Status:"Absent"})
+
+		return render_template('Report.html', data = attData)
 	except Exception as e:
 		return str(e)
 	return "hello user"
