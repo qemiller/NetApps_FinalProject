@@ -4,7 +4,7 @@ import time
 #import RPi.GPIO as GPIO
 #from digitalio import DigitalInOut, Direction
 import adafruit_fingerprint
-
+import requests
 #led = DigitalInOut(board.D13)
 #led.direction = Direction.OUTPUT
 #GPIO.setmode(GPIO.BOARD)
@@ -170,7 +170,7 @@ while True:
         raise RuntimeError('Failed to read templates')
     print("Fingerprint templates:", finger.templates)
     print("e) enroll print")
-    print("f) find print")
+    print("f) mark present")
     print("d) delete print")
     print("----------------")
     c = input("> ")
