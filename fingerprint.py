@@ -4,6 +4,8 @@ import time
 #import RPi.GPIO as GPIO
 #from digitalio import DigitalInOut, Direction
 import adafruit_fingerprint
+import pymongo
+import datetime
 import requests
 #led = DigitalInOut(board.D13)
 #led.direction = Direction.OUTPUT
@@ -162,6 +164,24 @@ def get_num():
         except ValueError:
             pass
     return i
+
+# takes ID and returns doc from DB if exists. Returns empty string if not.
+def checkID_DB(id):
+    mongoclient = pymongo.MongoClient()
+    db = mongoclient['FingerPrintData']
+    col = db['FingerPrintTemplates']
+    query = {"ID": id}    #define the criteria of our find
+    res = col.find(query) #retrieve from collection with specified query
+    print("Retrieved this from finger data in MongoDB: ", res) #just for debugging, really
+    if res['name'] is None or res['name'] == "":
+        print('You\'re not enrolled! Please see instructor about enrolling.')
+        return {'Name': "failed"} #simply because this function must return a dict
+
+    # package the name in a dictionary. Server will update student ID number
+    date = datetime.datetime.now().strftime("%m-%d-%Y")
+    # server expects 'Name' rather than 'name' : take car of that here
+    att_data = {'Name': res['name'], 'StudentIDNumber': 0, 'Date': date, 'Status': 'Present'}
+    return att_data
 
 
 while True:
