@@ -55,16 +55,17 @@ def summary(date):
 		date = date.replace('-','/')
 		print(date)
 		fullData = fullCol.find()
-		attData = attCol.find( {[Date]: date}, {name:1})
-		print(attData.pretty())
+		attData = attCol.find( {["Date"]: date}, {"Name":1})
 		for d in fullData:
-			studName = d["Name"]
-			presentStud
-			for s in attData:
-				if s["Name"] == studName:
-					presentStud.copy(s)
-			if presentStud == {}:
-				attData.append({Name:d["Name"],StudentIDNumber:d["StudentID"],Date:date,Status:"Absent"})
+		    studName = d["Name"]
+                    print(studName)
+		    presentStud
+		    for s in attData:
+		    if s["Name"] == studName:
+			presentStud.deepcopy(s)
+		    print(presentstud)
+                    if presentStud == {}:
+			attData.append({Name:d["Name"],StudentIDNumber:d["StudentID"],Date:date,Status:"Absent"})
 
 		return render_template('Report.html', data = attData)
 	except Exception as e:
