@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        {% for student in data %}
+            <h1>Student Name: {{student["Name"]}}</h1>
+            <h2>Attendance Status: {{student["Status"]}}</h2>
+            <h3>Date: {{student["Date"]}}</h3>
+            <h4></h4>
+        {% endfor %}
+    </body>
+</html>

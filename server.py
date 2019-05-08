@@ -1,9 +1,12 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, render_template
 from functools import wraps
 import socket
+import pymongo
 
 app= Flask(__name__)
-
+client = pymongo.MongoClient()
+db = client["Attendance"]
+col = db['Students']
 
 def check_auth(username,password):
 	return username=="abc" and password=='123'
@@ -42,6 +45,17 @@ def requires_auth(f):
 @requires_auth
 def hello():
 	return "hello user"
+
+@app.route("/summary", methods = ['GET'])
+@requires_auth
+def summary():
+	try:
+		data = col.find()
+		return render_template('Report.html', data = data)
+	except Exception as e:
+		return str(e)
+	return "hello user"
+
 
 def get_self_ip():
 	#return str((([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith()	
