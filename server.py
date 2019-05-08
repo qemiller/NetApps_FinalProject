@@ -52,24 +52,20 @@ def hello():
 @requires_auth
 def summary(date):
 	try:
-            date = date.replace('-','/')
-            print(date)
-            fullData = list(fullCol.find())
-            print(fullData)
-            attData = list(attCol.find({"Date":date}, {"Name": 1,"Status":1,"StudentID":1,"Date":1}))
-            if attData == []:
-                return "No attendance for that day!"
-            print(attData)
-            for d in fullData:
-                studName = d["Name"]
-                presentStud={}
-                for s in attData:
-                    if s["Name"] == studName:
-                        presentStud["Name"]="here"
-                        print(presentStud)
-                    if presentStud == {}:
-                        attData.append({"Name":d["Name"],"StudentIDNumber":d["StudentID"],"Date":date,"Status":"Absent"})
-            return render_template('Report.html', data = attData)
+		date = date.replace('-','/')
+		print(date)
+		fullData = fullCol.find()
+		attData = attCol.find( {[Date]: date}, {name:1})
+		print(attData.pretty())
+		for d in fullData:
+			studName = d["Name"]
+			for s in attData:
+				if s["Name"] == studName:
+					global presentStud = s[]
+			if presentStud == {}:
+				attData.append({Name:d["Name"],StudentIDNumber:d["StudentID"],Date:date,Status:"Absent"})
+
+		return render_template('Report.html', data = attData)
 	except Exception as e:
 		return str(e)
 	return "hello user"
