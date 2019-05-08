@@ -57,16 +57,15 @@ def summary(date):
 		fullData = fullCol.find()
 		attData = attCol.find( {["Date"]: date}, {"Name":1})
 		for d in fullData:
-		    studName = d["Name"]
-                    print(studName)
-		    presentStud
-		    for s in attData:
-		    if s["Name"] == studName:
+			studName = d["Name"]
+        	print(studName)
+			presentStud
+			for s in attData:
+			if s["Name"] == studName:
 			presentStud.deepcopy(s)
-		    print(presentstud)
-                    if presentStud == {}:
+			print(presentstud)
+        		if presentStud == {}:
 			attData.append({Name:d["Name"],StudentIDNumber:d["StudentID"],Date:date,Status:"Absent"})
-
 		return render_template('Report.html', data = attData)
 	except Exception as e:
 		return str(e)
