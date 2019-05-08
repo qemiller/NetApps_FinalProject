@@ -13,11 +13,11 @@
         <tbody>
             {% for student in data %}
             <tr>
-                <td>student["Name"]</td>
-                <td>student["Date"]</td>
-                <td>student["Status"]</td>
-            </tr>
+                <td>{{student["Name"]}}</td>
+                <td>{{student["Date"]}}</td>
+                <td>{{student["Status"]}}</td>
             {% endfor %}
+        </tr>
         </tbody>
     </table>
     <h4></h4>
