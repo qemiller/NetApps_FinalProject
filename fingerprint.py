@@ -57,7 +57,7 @@ def beep():
     mixer.init()
     alert = mixer.Sound('beep.wav')
     alert.play()
-    time.sleep(2)
+    time.sleep(5)
     mixer.quit()
 
 
@@ -252,6 +252,8 @@ while True:
             print("Detected #", finger.finger_id, "with confidence", finger.confidence)
             if finger.confidence > 50: 
                 #yellow_LED()
+                user=checkID_DB(finger.finger_id)
+                print("~~~~~~id is "+finger.finger_id+" with input use name is "+user+"~~~~~")
                 beep()
             else:
                 print("Try again")
