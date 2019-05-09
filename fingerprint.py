@@ -23,13 +23,12 @@ def red_LED():
     GPIO.output(green, False)
     GPIO.output(blue,  False)
     GPIO.output(red,   True)
-    time.sleep(5)
 
 def green_LED():
     GPIO.output(green, True)
     GPIO.output(blue,  False)
     GPIO.output(red,   False)
-    time.sleep(5)
+    time.sleep(3)
 
 def blue_LED():
     GPIO.output(green, False)
@@ -47,7 +46,7 @@ def yellow_LED():
     GPIO.output(green, True)
     GPIO.output(red,   True)
     GPIO.output(blue,  False)
-    time.sleep(5)
+    time.sleep(2)
 
 def all_off_LED():
     GPIO.output(blue,   False)
@@ -226,7 +225,7 @@ def checkID_DB(id):
     query = {"ID": id}    #define the criteria of our find
     result_query = list(col.find(query)) #retrieve from collection with specified query
     user = result_query[0]
-    print("Retrieved this from finger data in MongoDB: ", user) #just for debugging, really
+    #print("Retrieved this from finger data in MongoDB: ", user) #just for debugging, really
     if user['name'] is None or user['name'] == "":
         print('You\'re not enrolled! Please see instructor about enrolling.')
         return {'Name': "failed"} #simply because this function must return a dict
@@ -238,7 +237,7 @@ def checkID_DB(id):
     day = str(timenow.day)
     year = str(timenow.year)
     date = month + '/' + day + '/' + year
-    print("date is: ", date) #for debugging
+    #print("date is: ", date) #for debugging
     # server expects 'Name' rather than 'name' : take car of that here
     att_data = {'Name': user['name'], 'StudentIDNumber': 0, 'Date': date, 'Status': 'Present'}
     return att_data
@@ -311,12 +310,12 @@ while True:
             if finger.confidence > 100:
                 yellow_LED()
                 user=checkID_DB(finger.finger_id)
-                print("~~~~~~id is "+str(finger.finger_id)+" with input use name is "+str(user)+"~~~~~")
+                #print("~~~~~~id is "+str(finger.finger_id)+" with input use name is "+str(user)+"~~~~~")
                 status = POST_dict(user)
                 if status == "good":
                     beep()
                     green_LED()
-                    print("!!!post-dict is true!!!")
+                    print("Counted Present")
                 elif status == "already in":
                     print("Already counted present")
                 else:
