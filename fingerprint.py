@@ -270,7 +270,7 @@ def enroll_student(info): #info_tuple contains name and ID used to enroll finger
     if insert_student_DB(info['name'], info['ID']) == False:
         print("error while trying to insert student info to fingerprint pi's database")
         return False
-    dict = {'name': info['name'], 'StudentID': '123456789'}
+    dict = {'Name': info['name'], 'StudentID': '123456789'}
     result_string = POST_enroll(dict)
     return result_string
 
