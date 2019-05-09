@@ -245,12 +245,15 @@ def checkID_DB(id):
 
 def insert_student_DB(name, id):
     #insert to mongodb instance on fingerprint pi
-    mongoclient = pymongo.MongoClient()
-    db = mongoclient['FingerprintData']
-    col = db['FingerTemplates']
-    dict_to_insert = {'name': name, 'ID': id}
-    res = col.insert_one(dict_to_insert)
-    return res['acknowledge']
+    try:
+        mongoclient = pymongo.MongoClient()
+        db = mongoclient['FingerprintData']
+        col = db['FingerTemplates']
+        dict_to_insert = {'name': name, 'ID': id}
+        res = col.insert_one(dict_to_insert)
+        return True
+    except:
+        return False
 
 def POST_dict(data):
     Auth = auth.HTTPBasicAuth('abc','123')
@@ -267,14 +270,14 @@ def enroll_student(info): #info_tuple contains name and ID used to enroll finger
     if insert_student_DB(info['name'], info['ID']) == False:
         print("error while trying to insert student info to fingerprint pi's database")
         return False
-    dict = {'name': info['name'], 'StudentID': '123456789'}
+    dict = {'Name': info['name'], 'StudentID': '123456789'}
     result_string = POST_enroll(dict)
     return result_string
 
 
 def POST_enroll(data): #data is name and student ID number
     Auth = auth.HTTPBasicAuth('abc', '123')
-    url = 'http://' + IP_Address + '/enroll'
+    url = 'http://' + IP_Address + ':8080' + '/enroll'
     res = requests.post(url=url, data=data, auth=Auth)
     if res.status_code == 200:
         return "successfully enrolled"
