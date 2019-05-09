@@ -109,11 +109,22 @@ def addToFullRoster():
 		studentDict = {}
 		studentDict = request.form.to_dict()
 		print(studentDict)
-		fullCol.insert(studentDict)
-		return "Taken"
+		fullData = {}
+                fullData = list(attCol.find({"Name":studentDict["Name"]},{"StudentID":1}))
+                if len(fullData) == 0:
+                    fullCol.insert(studentDict)
+		    resp = jsonify("Enrolled")
+                    resp.status_code = 200
+                    return resp
+                else:
+                    resp = jsonify("Already enrolled")
+                    resp.status_code = 406
+                    return resp
 	except:
 		print('could not insert into full roster')
-		return "Error"
+                resp = jsonify("Error")
+		resp.status_code = 400
+                return resp
 
 def get_self_ip():
 	#return str((([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith()	
