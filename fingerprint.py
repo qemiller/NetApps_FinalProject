@@ -6,7 +6,7 @@ import requests
 from pygame import mixer
 import RPi.GPIO as GPIO #pip3 install RPi.GPIO
 #adding-from-client--------------------------------------------------------------------------
-
+IP_Address = str(sys.argv[1])
 blue=11
 red=15
 green=13
@@ -229,11 +229,23 @@ def checkID_DB(id):
         return {'Name': "failed"} #simply because this function must return a dict
 
     # package the name in a dictionary. Server will update student ID number
-    date = datetime.datetime.now().strftime("%m-%d-%Y")
+    #date = datetime.datetime.now().strftime("%m-%d-%Y")
+    timenow = datetime.datetime.now()
+    month = str(timenow.month)
+    day = str(timenow.day)
+    year = str(timenow.year)
+    date = month + '/' + day + '/' + year
+    print("date is: ", date) #for debugging
     # server expects 'Name' rather than 'name' : take car of that here
     att_data = {'Name': user['name'], 'StudentIDNumber': 0, 'Date': date, 'Status': 'Present'}
     return att_data
 
+def POST_dict(data):
+    destination = 'http://'+ IP_Address + ':8080/' + 'attendance'
+    if requests.post(url = destination, data = data) == False:
+        print("something went wrong on the server side")
+        return False
+    return True
 
 while True:
     print("----------------")
@@ -251,8 +263,8 @@ while True:
     if c == 'f':
         if get_fingerprint():
             print("Detected #", finger.finger_id, "with confidence", finger.confidence)
-            if finger.confidence > 50: 
-                #yellow_LED()
+            if finger.confidence > 50:
+                yellow_LED()
                 user=checkID_DB(finger.finger_id)
                 print("~~~~~~id is "+finger.finger_id+" with input use name is "+user+"~~~~~")
                 beep()
