@@ -1,19 +1,23 @@
+import json
 import time
 import adafruit_fingerprint
 import pymongo
 import datetime
 import requests
+from requests import auth
 from pygame import mixer
 import RPi.GPIO as GPIO #pip3 install RPi.GPIO
+import sys
 #adding-from-client--------------------------------------------------------------------------
 IP_Address = str(sys.argv[1])
 blue=11
 red=15
 green=13
-def LED_setup():
-    listLight=[red, green, blue]
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(listLight,GPIO.OUT)
+
+listLight=[red, green, blue]
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+GPIO.setup(listLight,GPIO.OUT)
 
 def red_LED():
     GPIO.output(green, False)
@@ -51,7 +55,6 @@ def all_off_LED():
     GPIO.output(green,  False)
 
 
-LED_setup()
 
 def beep():
     mixer.init()
@@ -241,13 +244,18 @@ def checkID_DB(id):
     return att_data
 
 def POST_dict(data):
+    Auth = auth.HTTPBasicAuth('abc','123')
     destination = 'http://'+ IP_Address + ':8080/' + 'attendance'
-    if requests.post(url = destination, data = data) == False:
-        print("something went wrong on the server side")
-        return False
-    return True
+    res = requests.post(url = destination, data = data,auth=Auth)
+    if res.status_code == 200:
+        return "good"
+    elif res.status_code == 406:
+        return "already in"
+    else:
+        return "error"
 
 while True:
+    red_LED()
     print("----------------")
     if finger.read_templates() != adafruit_fingerprint.OK:
         raise RuntimeError('Failed to read templates')
@@ -263,11 +271,19 @@ while True:
     if c == 'f':
         if get_fingerprint():
             print("Detected #", finger.finger_id, "with confidence", finger.confidence)
-            if finger.confidence > 50:
+            if finger.confidence > 100:
                 yellow_LED()
                 user=checkID_DB(finger.finger_id)
-                print("~~~~~~id is "+finger.finger_id+" with input use name is "+user+"~~~~~")
-                beep()
+                print("~~~~~~id is "+str(finger.finger_id)+" with input use name is "+str(user)+"~~~~~")
+                status = POST_dict(user)
+                if status == "good":
+                    beep()
+                    green_LED()
+                    print("!!!post-dict is true!!!")
+                elif status == "already in":
+                    print("Already counted present")
+                else:
+                    print('something wrong with post--')
             else:
                 print("Try again")
         else:
@@ -277,4 +293,4 @@ while True:
             print("Deleted!")
         else:
             print("Failed to delete")
-
+GPIO.cleanup()
