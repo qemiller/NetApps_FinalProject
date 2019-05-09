@@ -277,7 +277,7 @@ def enroll_student(info): #info_tuple contains name and ID used to enroll finger
 
 def POST_enroll(data): #data is name and student ID number
     Auth = auth.HTTPBasicAuth('abc', '123')
-    url = 'http://' + IP_Address + '/enroll'
+    url = 'http://' + IP_Address + ':8080' + '/enroll'
     res = requests.post(url=url, data=data, auth=Auth)
     if res.status_code == 200:
         return "successfully enrolled"
