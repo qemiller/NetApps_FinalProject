@@ -74,6 +74,30 @@ def summary(date):
 		return str(e)
 	return "hello user"
 
+@app.route("/attendance", methods = ['POST'])
+@requires_auth
+def markPresent():
+	try:
+		studentDict = {}
+		studentDict.copy(request.form.to_dict())
+		print(studentDict)
+		attCol.insert(studentDict)
+		return True
+	except:
+		print('could not insert into attendance')
+		return False
+@app.route("/enroll", methods = ['POST'])
+@requires_auth
+def addToFullRoster():
+	try:
+		studentDict = {}
+		studentDict.copy(request.form.to_dict())
+		print(studentDict)
+		fullCol.insert(studentDict)
+		return True
+	except:
+		print('could not insert into full roster')
+		return False
 
 def get_self_ip():
 	#return str((([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith()	
