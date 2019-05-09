@@ -243,6 +243,15 @@ def checkID_DB(id):
     att_data = {'Name': user['name'], 'StudentIDNumber': 0, 'Date': date, 'Status': 'Present'}
     return att_data
 
+def insert_student_DB(name, id):
+    #insert to mongodb instance on fingerprint pi
+    mongoclient = pymongo.MongoClient()
+    db = mongoclient['FingerprintData']
+    col = db['FingerTemplates']
+    dict_to_insert = {'name': name, 'ID': id}
+    res = col.insert_one(dict_to_insert)
+    return res['acknowledge']
+
 def POST_dict(data):
     Auth = auth.HTTPBasicAuth('abc','123')
     destination = 'http://'+ IP_Address + ':8080/' + 'attendance'
@@ -251,6 +260,26 @@ def POST_dict(data):
         return "good"
     elif res.status_code == 406:
         return "already in"
+    else:
+        return "error"
+
+def enroll_student(info): #info_tuple contains name and ID used to enroll fingerprint
+    if insert_student_DB(info['name'], info['ID']) == False:
+        print("error while trying to insert student info to fingerprint pi's database")
+        return False
+    dict = {'name': info['name'], 'StudentID': '123456789'}
+    result_string = POST_enroll(dict)
+    return result_string
+
+
+def POST_enroll(data): #data is name and student ID number
+    Auth = auth.HTTPBasicAuth('abc', '123')
+    url = 'http://' + IP_Address + '/enroll'
+    res = requests.post(url=url, data=data, auth=Auth)
+    if res.status_code == 200:
+        return "successfully enrolled"
+    elif res.status_code == 406:
+        return "already enrolled"
     else:
         return "error"
 
@@ -267,7 +296,12 @@ while True:
     c = input("> ")
 
     if c == 'e':
-        enroll_finger(get_num())
+        name = input('Enter your name: ')
+        print('\n')
+        id = get_num()
+        info = {'name': name, 'ID': id}  # goes into local mongodb
+        enroll_finger(id) #enrolls finger to the fingerprint reader
+        print(enroll_student(info)) #inserts to local db, then posts to server to add student to master roster
     if c == 'f':
         if get_fingerprint():
             print("Detected #", finger.finger_id, "with confidence", finger.confidence)
