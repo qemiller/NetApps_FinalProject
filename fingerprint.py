@@ -245,12 +245,15 @@ def checkID_DB(id):
 
 def insert_student_DB(name, id):
     #insert to mongodb instance on fingerprint pi
-    mongoclient = pymongo.MongoClient()
-    db = mongoclient['FingerprintData']
-    col = db['FingerTemplates']
-    dict_to_insert = {'name': name, 'ID': id}
-    res = col.insert_one(dict_to_insert)
-    return res['acknowledge']
+    try:
+        mongoclient = pymongo.MongoClient()
+        db = mongoclient['FingerprintData']
+        col = db['FingerTemplates']
+        dict_to_insert = {'name': name, 'ID': id}
+        res = col.insert_one(dict_to_insert)
+        return True
+    except:
+        return False
 
 def POST_dict(data):
     Auth = auth.HTTPBasicAuth('abc','123')
