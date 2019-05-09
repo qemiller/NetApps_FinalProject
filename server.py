@@ -1,4 +1,4 @@
-from flask import Flask, request, Response, render_template
+from flask import Flask, request, Response, render_template,jsonify
 from functools import wraps
 import socket
 import pymongo
@@ -66,9 +66,13 @@ def summary(date):
                 for s in attData:
                     if s["Name"] == studName:
                         presentStud["Name"]="here"
-                        print(presentStud)
                     if presentStud == {}:
-                        attData.append({"Name":d["Name"],"StudentIDNumber":d["StudentID"],"Date":date,"Status":"Absent"})
+                        found = False
+                        for t in attData:
+                            if(t["Name"] == studName):
+                                found = True
+                        if found==False:
+                            attData.append({"Name":d["Name"],"StudentIDNumber":d["StudentID"],"Date":date,"Status":"Absent"})
             return render_template('Report.html', data = attData)
 	except Exception as e:
 		return str(e)
@@ -77,27 +81,39 @@ def summary(date):
 @app.route("/attendance", methods = ['POST'])
 @requires_auth
 def markPresent():
-	try:
-		studentDict = {}
-		studentDict.copy(request.form.to_dict())
-		print(studentDict)
-		attCol.insert(studentDict)
-		return True
-	except:
-		print('could not insert into attendance')
-		return False
+        try:
+            studentDict = {}
+            studentDict = request.form.to_dict()
+            print(studentDict)
+            attData = {}
+            attData = list(attCol.find({"Date":studentDict["Date"],"Name":studentDict["Name"]},{"Status":1}))
+            if len(attData) == 0:
+                attCol.insert(studentDict)
+                resp = jsonify("Taken")
+                resp.status_code = 200
+                return resp
+            else:
+                resp = jsonify("already in attendance")
+                resp.status_code = 406
+                return resp
+        except:
+                print('could not insert into attendance')
+                resp = jsonify("error")
+                resp.status_code = 400
+                return resp
+
 @app.route("/enroll", methods = ['POST'])
 @requires_auth
 def addToFullRoster():
 	try:
 		studentDict = {}
-		studentDict.copy(request.form.to_dict())
+		studentDict = request.form.to_dict()
 		print(studentDict)
 		fullCol.insert(studentDict)
-		return True
+		return "Taken"
 	except:
 		print('could not insert into full roster')
-		return False
+		return "Error"
 
 def get_self_ip():
 	#return str((([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith()	
