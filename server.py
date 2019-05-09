@@ -53,13 +53,10 @@ def hello():
 def summary(date):
 	try:
             date = date.replace('-','/')
-            print(date)
             fullData = list(fullCol.find())
-            print(fullData)
             attData = list(attCol.find({"Date":date}, {"Name": 1,"Status":1,"StudentID":1,"Date":1}))
             if attData == []:
                 return "No attendance for that day!"
-            print(attData)
             for d in fullData:
                 studName = d["Name"]
                 presentStud={}
@@ -84,7 +81,6 @@ def markPresent():
         try:
             studentDict = {}
             studentDict = request.form.to_dict()
-            print(studentDict)
             attData = {}
             attData = list(attCol.find({"Date":studentDict["Date"],"Name":studentDict["Name"]},{"Status":1}))
             if len(attData) == 0:
@@ -106,14 +102,13 @@ def markPresent():
 @requires_auth
 def addToFullRoster():
 	try:
-		studentDict = {}
-		studentDict = request.form.to_dict()
-		print(studentDict)
-		fullData = {}
-                fullData = list(attCol.find({"Name":studentDict["Name"]},{"StudentID":1}))
+                studentDict = {}
+                studentDict = request.form.to_dict()
+                fullData = {}
+                fullData = list(fullCol.find({"Name":studentDict["Name"]},{"StudentID":1}))
                 if len(fullData) == 0:
                     fullCol.insert(studentDict)
-		    resp = jsonify("Enrolled")
+                    resp = jsonify("Enrolled")
                     resp.status_code = 200
                     return resp
                 else:
@@ -121,9 +116,9 @@ def addToFullRoster():
                     resp.status_code = 406
                     return resp
 	except:
-		print('could not insert into full roster')
+                print('could not insert into full roster')
                 resp = jsonify("Error")
-		resp.status_code = 400
+                resp.status_code = 400
                 return resp
 
 def get_self_ip():
